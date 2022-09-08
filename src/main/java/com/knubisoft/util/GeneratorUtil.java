@@ -9,30 +9,40 @@ public class GeneratorUtil {
     private final static List<String> ALPHABET = List.of("a", "b", "c", "d", "e", "f", "g", "h",
             "i", "j", "k", "l", "m");
     private static final int QUANTITY_SYMBOLS = 6;
-    private static Map<Class<?>, Supplier<Object>> objectsMap;
+    private static Map<Class<?>, Supplier<Object>> objectsSimpleMap;
+    private static Map<Class<?>, Supplier<Object>> objectsCollectionsFrameworkMap;
     private final Random random = new Random();
 
     public GeneratorUtil() {
-        if (objectsMap == null) {
+        if (objectsSimpleMap == null) {
             loadObjectsToMap();
+        }
+        if (objectsCollectionsFrameworkMap == null) {
+            loadCollectionsFrameworkToMap();
         }
     }
 
     private void loadObjectsToMap() {
-        objectsMap = new LinkedHashMap<>();
-        objectsMap.put(String.class, this::getStringRandom);
-        objectsMap.put(Integer.class, () -> random.nextInt(QUANTITY_SYMBOLS));
-        objectsMap.put(Long.class, random::nextLong);
-        objectsMap.put(Float.class, random::nextFloat);
-        objectsMap.put(Double.class, random::nextDouble);
-        objectsMap.put(Boolean.class, random::nextBoolean);
-        objectsMap.put(Character.class, () -> ALPHABET.get(random.nextInt(ALPHABET.size())));
-        objectsMap.put(List.class, ArrayList::new);
-        objectsMap.put(Map.class, LinkedHashMap::new);
+        objectsSimpleMap = new LinkedHashMap<>();
+        objectsSimpleMap.put(String.class, this::getStringRandom);
+        objectsSimpleMap.put(Integer.class, () -> random.nextInt(QUANTITY_SYMBOLS));
+        objectsSimpleMap.put(Long.class, random::nextLong);
+        objectsSimpleMap.put(Float.class, random::nextFloat);
+        objectsSimpleMap.put(Double.class, random::nextDouble);
+        objectsSimpleMap.put(Boolean.class, random::nextBoolean);
+        objectsSimpleMap.put(Character.class, () -> ALPHABET.get(random.nextInt(ALPHABET.size())));
     }
 
-    public Object getGeneratedObject(Class<?> clazz) {
-        return objectsMap.get(clazz).get();
+    public Object getSimpleGeneratedObject(Class<?> clazz) {
+        return objectsSimpleMap.get(clazz).get();
+    }
+
+    public Set<Class<?>> getSimpleClasses() {
+        return objectsSimpleMap.keySet();
+    }
+
+    public Set<Class<?>> getCollectionClasses() {
+        return objectsCollectionsFrameworkMap.keySet();
     }
 
     private String getStringRandom() {
@@ -40,5 +50,17 @@ public class GeneratorUtil {
         return Stream.generate(stringSupplier)
                 .limit(QUANTITY_SYMBOLS)
                 .collect(Collectors.joining());
+    }
+
+    private void loadCollectionsFrameworkToMap() {
+        objectsCollectionsFrameworkMap = new LinkedHashMap<>();
+        objectsCollectionsFrameworkMap.put(List.class, ArrayList::new);
+        objectsCollectionsFrameworkMap.put(Map.class, LinkedHashMap::new);
+        objectsCollectionsFrameworkMap.put(Set.class, HashSet::new);
+        objectsCollectionsFrameworkMap.put(Queue.class, ArrayDeque::new);
+    }
+
+    public Object getCollectionGeneratedObject(Class<?> clazz) {
+        return objectsCollectionsFrameworkMap.get(clazz).get();
     }
 }
