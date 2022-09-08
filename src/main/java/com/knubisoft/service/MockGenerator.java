@@ -10,13 +10,18 @@ import lombok.SneakyThrows;
 
 public class MockGenerator {
     private static final int LIMIT_RECURSION = 6;
-    private static final int QUANTITY_ELEMENTS = 5;
+    private final int quantityElements;
     private final Random random = new Random();
     private final GeneratorUtil generatorUtil = new GeneratorUtil();
 
+    public MockGenerator(int quantity) {
+        quantityElements = quantity;
+    }
+
     public <T> T startMockGenerator(Type typeName) {
-         int count = 0;
-         return createGenerator(typeName, count);
+
+        int count = 0;
+        return createGenerator(typeName, count);
     }
 
     private  <T> T createGenerator(Type typeName, int count) {
@@ -81,7 +86,7 @@ public class MockGenerator {
                 instance = (Queue) generatorUtil.getCollectionGeneratedObject(rawClass);
             }
             Stream.generate(() -> createGenerator(argument, count))
-                    .limit(QUANTITY_ELEMENTS)
+                    .limit(quantityElements)
                     .forEach(instance::add);
             return (T) instance;
         }
@@ -89,7 +94,7 @@ public class MockGenerator {
         if (checkIsMap(rawClass)) {
             Map instance = (Map) generatorUtil.getCollectionGeneratedObject(rawClass);
             Stream.generate(() -> creatObjectForMap(typeArguments[0], typeArguments[1], count))
-                    .limit(QUANTITY_ELEMENTS)
+                    .limit(quantityElements)
                     .forEach(array -> instance.put(array[0], array[1]));
             return (T) instance;
         }

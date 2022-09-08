@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
-        MockGenerator mockGenerator = new MockGenerator();
+        MockGenerator mockGenerator = new MockGenerator(5);
 
         TypeReference<String> stringTypeReference = new TypeReference<>() {};
         System.out.println(mockGenerator.startMockGenerator(stringTypeReference.getType()) .toString());
