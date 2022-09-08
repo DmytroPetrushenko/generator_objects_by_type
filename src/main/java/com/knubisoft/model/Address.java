@@ -1,2 +1,9 @@
-package com.knubisoft.model;public class Address {
+package com.knubisoft.model;
+
+import lombok.Data;
+
+@Data
+public class Address {
+    private String street;
+    private String city;
 }
