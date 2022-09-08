@@ -11,7 +11,6 @@ import lombok.SneakyThrows;
 public class MockGenerator {
     private static final int LIMIT_RECURSION = 6;
     private final int quantityElements;
-    private final Random random = new Random();
     private final GeneratorUtil generatorUtil = new GeneratorUtil();
 
     public MockGenerator(int quantity) {
