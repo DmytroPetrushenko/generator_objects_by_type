@@ -4,18 +4,21 @@ import com.knubisoft.util.GeneratorUtil;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
 import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
+@RequiredArgsConstructor
 public class MockGenerator {
-    private static final int LIMIT_RECURSION = 6;
+    private static final GeneratorUtil generatorUtil = new GeneratorUtil();
+    private final int limitRecursion;
     private final int quantityElements;
-    private final GeneratorUtil generatorUtil = new GeneratorUtil();
-
-    public MockGenerator(int quantity) {
-        quantityElements = quantity;
-    }
 
     public <T> T startMockGenerator(Type typeName) {
 
@@ -23,11 +26,11 @@ public class MockGenerator {
         return createGenerator(typeName, count);
     }
 
-    private  <T> T createGenerator(Type typeName, int count) {
+    private <T> T createGenerator(Type typeName, int count) {
         if (isSimple(typeName)) {
             return generateSimpleObject(typeName);
         }
-        if ((count = count + 1) == LIMIT_RECURSION) {
+        if ((count = count + 1) == limitRecursion) {
             return null;
         }
         if (isCollectionsFramework(typeName)) {
@@ -35,6 +38,7 @@ public class MockGenerator {
         }
         return generateCustomObject(typeName, count);
     }
+
     private boolean isSimple(Type externalType) {
         Set<Class<?>> simpleClasses = generatorUtil.getSimpleClasses();
         Optional<String> optional = simpleClasses.stream()
@@ -55,7 +59,7 @@ public class MockGenerator {
 
     private Type getRawType(Type type) {
         try {
-        return ((ParameterizedType) type).getRawType();
+            return ((ParameterizedType) type).getRawType();
         } catch (ClassCastException e) {
             return type;
         }
@@ -113,7 +117,7 @@ public class MockGenerator {
         if (rawClass.getInterfaces().length == 0) {
             return false;
         }
-        return rawClass.getInterfaces()[0].equals(Collection.class) ;
+        return rawClass.getInterfaces()[0].equals(Collection.class);
     }
 
     @SneakyThrows

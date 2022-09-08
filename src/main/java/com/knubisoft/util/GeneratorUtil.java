@@ -1,12 +1,20 @@
 package com.knubisoft.util;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Random;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GeneratorUtil {
-    private final static List<String> ALPHABET = List.of("a", "b", "c", "d", "e", "f", "g", "h",
+    private static final List<String> ALPHABET = List.of("a", "b", "c", "d", "e", "f", "g", "h",
             "i", "j", "k", "l", "m");
     private static final int QUANTITY_SYMBOLS = 6;
     private static Map<Class<?>, Supplier<Object>> objectsSimpleMap;
