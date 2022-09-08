@@ -4,12 +4,7 @@ import com.knubisoft.util.GeneratorUtil;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 import java.util.stream.Stream;
 import lombok.SneakyThrows;
 
@@ -75,9 +70,16 @@ public class MockGenerator {
         Type[] typeArguments = parameterizedType.getActualTypeArguments();
         Class<?> rawClass = Class.forName(rawType.getTypeName());
 
-        if (checkIsList(rawClass)) {
+        if (checkIsCollection(rawClass)) {
             Type argument = typeArguments[0];
-            List instance = (List) generatorUtil.getCollectionGeneratedObject(rawClass);
+            Collection instance;
+            if (rawClass.isAssignableFrom(List.class)) {
+                instance = (List) generatorUtil.getCollectionGeneratedObject(rawClass);
+            } else if (rawClass.isAssignableFrom(Set.class)) {
+                instance = (Set) generatorUtil.getCollectionGeneratedObject(rawClass);
+            } else {
+                instance = (Queue) generatorUtil.getCollectionGeneratedObject(rawClass);
+            }
             Stream.generate(() -> createGenerator(argument, count))
                     .limit(QUANTITY_ELEMENTS)
                     .forEach(instance::add);
@@ -85,9 +87,6 @@ public class MockGenerator {
         }
 
         if (checkIsMap(rawClass)) {
-            List<Object> collect = Stream.of(typeArguments[0], typeArguments[1])
-                    .map(type -> createGenerator(type, count))
-                    .collect(Collectors.toList());
             Map instance = (Map) generatorUtil.getCollectionGeneratedObject(rawClass);
             Stream.generate(() -> creatObjectForMap(typeArguments[0], typeArguments[1], count))
                     .limit(QUANTITY_ELEMENTS)
@@ -106,8 +105,11 @@ public class MockGenerator {
         return rawClass.isAssignableFrom(Map.class);
     }
 
-    private boolean checkIsList(Class<?> rawClass) {
-        return rawClass.isAssignableFrom(List.class);
+    private boolean checkIsCollection(Class<?> rawClass) {
+        if (rawClass.getInterfaces().length == 0) {
+            return false;
+        }
+        return rawClass.getInterfaces()[0].equals(Collection.class) ;
     }
 
     @SneakyThrows
