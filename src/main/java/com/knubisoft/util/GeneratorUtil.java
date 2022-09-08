@@ -22,9 +22,9 @@ public class GeneratorUtil {
         objectsMap = new LinkedHashMap<>();
         objectsMap.put(String.class, this::getStringRandom);
         objectsMap.put(Integer.class, () -> random.nextInt(QUANTITY_SYMBOLS));
-        objectsMap.put(Long.class, () -> random.nextLong(QUANTITY_SYMBOLS));
-        objectsMap.put(Float.class, () -> random.nextFloat(QUANTITY_SYMBOLS));
-        objectsMap.put(Double.class, () -> random.nextDouble(QUANTITY_SYMBOLS));
+        objectsMap.put(Long.class, random::nextLong);
+        objectsMap.put(Float.class, random::nextFloat);
+        objectsMap.put(Double.class, random::nextDouble);
         objectsMap.put(Boolean.class, random::nextBoolean);
         objectsMap.put(Character.class, () -> ALPHABET.get(random.nextInt(ALPHABET.size())));
         objectsMap.put(List.class, ArrayList::new);

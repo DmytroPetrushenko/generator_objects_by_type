@@ -93,7 +93,7 @@ public class MockGenerator {
         if (checkIsList(rawClass)) {
             Type argument = typeArguments[0];
             List instance = (List) generatorUtil.getGeneratedObject(rawClass);
-            Stream.generate(createGenerator(argument))
+            Stream.generate(() -> createGenerator(argument))
                     .limit(QUANTITY_ELEMENTS)
                     .forEach(instance::add);
             return (T) instance;
